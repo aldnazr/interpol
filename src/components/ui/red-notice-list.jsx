@@ -9,25 +9,30 @@ import { Loading } from "./loading";
 import { Badge } from "./badge";
 import { Card, CardContent } from "./card";
 import { User } from "lucide-react";
+import { Button } from "./button";
 
 export default function RedNoticesList() {
   const router = useRouter();
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const resultPerPage = 30;
 
   useEffect(() => {
     async function fetchNotices() {
+      setLoading(true);
       try {
         const res = await fetch(
-          "https://ws-public.interpol.int/notices/v1/red?resultPerPage=100"
+          `https://ws-public.interpol.int/notices/v1/red?resultPerPage=${resultPerPage}&page=${page}`
         );
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         const data = await res.json();
-        const items = data._embedded.notices || [];
+        const items = data._embedded?.notices || [];
         setNotices(items);
+        setError(null);
       } catch (err) {
         console.error("Fetch Interpol Red Notices failed:", err);
         setError(err.message);
@@ -37,11 +42,19 @@ export default function RedNoticesList() {
     }
 
     fetchNotices();
-  }, []);
+  }, [page]);
 
   function getFlagsImage(country, style = "flat", size = "64") {
     return `https://flagsapi.com/${country}/${style}/${size}.png`;
   }
+
+  const handleNext = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (page > 1) setPage((prev) => prev - 1);
+  };
 
   if (loading) {
     return <Loading />;
@@ -129,6 +142,13 @@ export default function RedNoticesList() {
           </li>
         ))}
       </ul>
+      <div className="flex justify-start items-center space-x-4 my-4">
+        <Button disabled={page === 1} onClick={handlePrev}>
+          Prev
+        </Button>
+        <span>Page {page}</span>
+        <Button onClick={handleNext}>Next</Button>
+      </div>
     </div>
   );
 }
