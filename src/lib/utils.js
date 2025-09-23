@@ -1,16 +1,16 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export function cn(...inputs) {
+function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-export function getCountryName(code = "", locale = "en") {
+function getCountryName(code = "", locale = "en") {
   const regionNames = new Intl.DisplayNames([locale], { type: "region" });
   return regionNames.of(code.trim().toUpperCase());
 }
 
-export const countryMap = {
+const countryMap = {
   AF: "Afghanistan",
   AL: "Albania",
   DZ: "Algeria",
@@ -106,3 +106,5 @@ export const countryMap = {
   YE: "Yemen",
   ZW: "Zimbabwe",
 };
+
+export { cn, getCountryName, countryMap };

@@ -1,15 +1,15 @@
-/** biome-ignore-all lint/a11y/useKeyWithClickEvents: <explanation> */
+/** biome-ignore-all assist/source/organizeImports: <explanation> */
 "use client";
 
-import { countryMap } from "@/lib/utils";
+import { User } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loading } from "./loading";
 import { Badge } from "./badge";
-import { Card, CardContent } from "./card";
-import { User } from "lucide-react";
 import { Button } from "./button";
+import { Card, CardContent } from "./card";
+import { Loading } from "./loading";
+import { countryMap } from "@/lib/utils";
 
 export default function RedNoticesList() {
   const router = useRouter();
@@ -122,7 +122,7 @@ export default function RedNoticesList() {
                         ? (() => {
                             const dob = new Date(notice.date_of_birth);
                             const today = new Date();
-                            if (isNaN(dob)) return notice.date_of_birth;
+                            if (Number.isNaN(dob)) return notice.date_of_birth;
                             let age = today.getFullYear() - dob.getFullYear();
                             const m = today.getMonth() - dob.getMonth();
                             if (
