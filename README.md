@@ -2,8 +2,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Screenshot
 
-<img src="https://raw.githubusercontent.com/aldnazr/interpol/refs/heads/main/preview/1.png" width="" />
-<img src="https://raw.githubusercontent.com/aldnazr/interpol/refs/heads/main/preview/2.png" width="" />
+<img src="https://raw.githubusercontent.com/aldnazr/interpol/refs/heads/master/preview/1.png" width="" />
+<img src="https://raw.githubusercontent.com/aldnazr/interpol/refs/heads/master/preview/2.png" width="" />
 
 ## Getting Started
 
