@@ -92,7 +92,7 @@ export default function RedNoticeDetail({ noticeID }: { noticeID: string }) {
     <div className="container mx-auto px-4 max-w-6xl">
       {isLoading && <NoticeDetailSkeleton />}
       {!isLoading && !error && (
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="container mx-auto px-4 py-5 max-w-6xl">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-destructive/10 rounded-lg">
