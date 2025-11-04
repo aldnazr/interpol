@@ -377,7 +377,7 @@ export default function RedNoticeDetail({ noticeID }: { noticeID: string }) {
                   {notice?._links?.self && (
                     <Button variant={"outline"}>
                       <a
-                        href={notice?._links.self.href}
+                        href={`https://www.interpol.int/How-we-work/Notices/Red-Notices/View-Red-Notices#${noticeID}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-muted-foreground"
@@ -387,10 +387,10 @@ export default function RedNoticeDetail({ noticeID }: { noticeID: string }) {
                       </a>
                     </Button>
                   )}
-                  {notice?._links?.images && (
+                  {photoSrc && (
                     <Button variant={"outline"}>
                       <a
-                        href={notice?._links.images.href}
+                        href={photoSrc}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-muted-foreground"

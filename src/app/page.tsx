@@ -25,28 +25,32 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Home() {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
   const [forename, setForename] = useState("");
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const [totalPages, setTotalPages] = useState(0);
 
   const loadNotices = async (
     searchParams: { name?: string; forename?: string; page?: number } = {}
   ) => {
     try {
-      const currentPage = searchParams.page || 1;
       setIsLoading(true);
       setError(null);
-      const data = await fetchRedNotice({ ...searchParams, page: currentPage });
+      const data = await fetchRedNotice(searchParams);
       setNotices(data?._embedded?.notices || []);
       const itemsPerPage = 20;
       setTotalPages(Math.ceil((data?.total || 0) / itemsPerPage));
-      setPage(currentPage);
     } catch (e) {
       setError("Failed to load data from Interpol.");
       console.error(e);
@@ -56,21 +60,23 @@ export default function Home() {
   };
 
   useEffect(() => {
-    loadNotices({ name, forename, page });
-  }, [page]);
+    const name = searchParams.get("name") ?? "";
+    const forename = searchParams.get("forename") ?? "";
+    loadNotices({ name, forename, page: currentPage });
+  }, [searchParams, currentPage]);
 
   const handleSearch = () => {
-    if (page === 1) {
-      loadNotices({ name, forename, page: 1 });
-    } else {
-      setPage(1);
-    }
+    const params = new URLSearchParams(searchParams);
+    params.set("name", name);
+    params.set("forename", forename);
+    params.set("page", "1");
+    router.push(`${pathname}?${params.toString()}`);
   };
 
-  const handlePageChange = (newPage: number) => {
-    if (newPage > 0 && newPage <= totalPages) {
-      setPage(newPage);
-    }
+  const createPageURL = (pageNumber: number | string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", pageNumber.toString());
+    return `${pathname}?${params.toString()}`;
   };
 
   const getPaginationItems = () => {
@@ -88,8 +94,8 @@ export default function Home() {
       return items;
     }
 
-    const leftSiblingIndex = Math.max(page - siblingCount, 1);
-    const rightSiblingIndex = Math.min(page + siblingCount, totalPages);
+    const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
+    const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPages);
 
     const shouldShowLeftEllipsis = leftSiblingIndex > 2;
     const shouldShowRightEllipsis = rightSiblingIndex < totalPages - 1;
@@ -207,14 +213,10 @@ export default function Home() {
                   <PaginationContent>
                     <PaginationItem>
                       <PaginationPrevious
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handlePageChange(page - 1);
-                        }}
+                        href={createPageURL(currentPage - 1)}
                         style={{
-                          pointerEvents: page === 1 ? "none" : "auto",
-                          opacity: page === 1 ? 0.5 : 1,
+                          pointerEvents: currentPage === 1 ? "none" : "auto",
+                          opacity: currentPage === 1 ? 0.5 : 1,
                         }}
                       />
                     </PaginationItem>
@@ -222,12 +224,8 @@ export default function Home() {
                       <PaginationItem key={index}>
                         {typeof item === "number" ? (
                           <PaginationLink
-                            href="#"
-                            isActive={page === item}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handlePageChange(item);
-                            }}
+                            href={createPageURL(item)}
+                            isActive={currentPage === item}
                           >
                             {item}
                           </PaginationLink>
@@ -238,14 +236,11 @@ export default function Home() {
                     ))}
                     <PaginationItem>
                       <PaginationNext
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handlePageChange(page + 1);
-                        }}
+                        href={createPageURL(currentPage + 1)}
                         style={{
-                          pointerEvents: page === totalPages ? "none" : "auto",
-                          opacity: page === totalPages ? 0.5 : 1,
+                          pointerEvents:
+                            currentPage === totalPages ? "none" : "auto",
+                          opacity: currentPage === totalPages ? 0.5 : 1,
                         }}
                       />
                     </PaginationItem>
