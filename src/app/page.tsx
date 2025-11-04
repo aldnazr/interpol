@@ -1,66 +1,261 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Notice } from "@/types/api";
+import { Filter, ServerCrash, User } from "lucide-react";
 import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { fetchRedNotice } from "./lib/data";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export default function Home() {
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [forename, setForename] = useState("");
+
+  const loadNotices = async (
+    searchParams: { name?: string; forename?: string; page?: number } = {}
+  ) => {
+    try {
+      const currentPage = searchParams.page || 1;
+      setIsLoading(true);
+      setError(null);
+      const data = await fetchRedNotice({ ...searchParams, page: currentPage });
+      setNotices(data?._embedded?.notices || []);
+      const itemsPerPage = 20;
+      setTotalPages(Math.ceil((data?.total || 0) / itemsPerPage));
+      setPage(currentPage);
+    } catch (e) {
+      setError("Failed to load data from Interpol.");
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadNotices({ name, forename, page });
+  }, [page]);
+
+  const handleSearch = () => {
+    if (page === 1) {
+      loadNotices({ name, forename, page: 1 });
+    } else {
+      setPage(1);
+    }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
+
+  const getPaginationItems = () => {
+    const items: (number | string)[] = [];
+    const maxPagesToShow = 5;
+    const siblingCount = 1;
+
+    // Total item paginasi: 1 (halaman pertama) + 1 (halaman terakhir) + halaman saat ini + 2*siblingCount + 2 (elipsis)
+    const totalSlots = 2 * siblingCount + maxPagesToShow;
+
+    if (totalPages <= totalSlots) {
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(i);
+      }
+      return items;
+    }
+
+    const leftSiblingIndex = Math.max(page - siblingCount, 1);
+    const rightSiblingIndex = Math.min(page + siblingCount, totalPages);
+
+    const shouldShowLeftEllipsis = leftSiblingIndex > 2;
+    const shouldShowRightEllipsis = rightSiblingIndex < totalPages - 1;
+
+    items.push(1);
+
+    if (shouldShowLeftEllipsis) {
+      items.push("...");
+    }
+
+    for (let i = leftSiblingIndex; i <= rightSiblingIndex; i++) {
+      if (i > 1 && i < totalPages) {
+        items.push(i);
+      }
+    }
+
+    if (shouldShowRightEllipsis) {
+      items.push("...");
+    }
+
+    items.push(totalPages);
+    return Array.from(new Set(items)); // Hapus duplikat jika ada
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="flex flex-col md:flex-row mt-4 gap-4">
+      <Card className="w-full max-w-xs h-fit sticky top-4">
+        <CardContent className="space-y-3">
+          <div className="flex flex-row items-center space-x-1">
+            <Filter />
+            <h3 className="text-lg">Filter</h3>
+          </div>
+          <Input
+            type="text"
+            placeholder="First Name"
+            value={forename}
+            onChange={(e) => setForename(e.target.value)}
+          />
+          <Input
+            type="text"
+            placeholder="Last Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </CardContent>
+        <CardFooter>
+          <Button className="w-full" onClick={handleSearch}>
+            Search
+          </Button>
+        </CardFooter>
+      </Card>
+      <div className="flex-1">
+        {isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="flex flex-col space-y-3">
+                <Skeleton className="h-[150px] w-full rounded-xl" />
+                <div className="space-y-2 text-center flex flex-col items-center pt-2">
+                  <Skeleton className="h-6 w-4/5" />
+                  <Skeleton className="h-4 w-5/6 mt-2" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {error && (
+          <div className="flex flex-col items-center justify-center h-full text-destructive">
+            <ServerCrash className="size-8" />
+            <p className="mt-2">{error}</p>
+          </div>
+        )}
+        {!isLoading && !error && (
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {notices.map((notice) => (
+                <Link
+                  href={notice.entity_id.replace("/", "-")}
+                  key={notice.entity_id}
+                >
+                  <Card>
+                    <CardHeader className="flex flex-col justify-center items-center">
+                      {notice?._links?.thumbnail?.href ? (
+                        <Image
+                          src={notice._links.thumbnail.href}
+                          alt={`Mugshot of ${notice.name}`}
+                          width={150}
+                          height={150}
+                          loading="eager"
+                          className="mx-auto rounded-md object-cover"
+                        />
+                      ) : (
+                        <Card className="h-[150px] w-full bg-muted rounded-md flex items-center justify-center">
+                          <div className="text-center w-full h-full font-semibold text-muted-foreground">
+                            <User className="size-10 mx-auto mb-2" />
+                            <p className="text-sm">Photo Available</p>
+                            <p className="text-xs">via INTERPOL</p>
+                          </div>
+                        </Card>
+                      )}
+
+                      <CardTitle className="text-center pt-2">{`${notice.forename} ${notice.name}`}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm text-muted-foreground text-center">
+                      <p>Nationality: {notice.nationalities || "N/A"}</p>
+                      <p>Date of Birth: {notice.date_of_birth || "N/A"}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+            <div className="my-4">
+              {totalPages > 1 && (
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handlePageChange(page - 1);
+                        }}
+                        style={{
+                          pointerEvents: page === 1 ? "none" : "auto",
+                          opacity: page === 1 ? 0.5 : 1,
+                        }}
+                      />
+                    </PaginationItem>
+                    {getPaginationItems().map((item, index) => (
+                      <PaginationItem key={index}>
+                        {typeof item === "number" ? (
+                          <PaginationLink
+                            href="#"
+                            isActive={page === item}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handlePageChange(item);
+                            }}
+                          >
+                            {item}
+                          </PaginationLink>
+                        ) : (
+                          <PaginationEllipsis />
+                        )}
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handlePageChange(page + 1);
+                        }}
+                        style={{
+                          pointerEvents: page === totalPages ? "none" : "auto",
+                          opacity: page === totalPages ? 0.5 : 1,
+                        }}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
