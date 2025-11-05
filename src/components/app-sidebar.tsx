@@ -14,28 +14,15 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "./mode-toggle";
-import {
-  BoxIcon,
-  GalleryVerticalEnd,
-  Globe,
-  LucideGalleryVerticalEnd,
-  OctagonAlert,
-  OctagonX,
-  ShieldAlert,
-  Siren,
-  TriangleAlert,
-  UserSearch,
-  UserX,
-} from "lucide-react";
+import { CircleAlert, ShieldAlert, Siren, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
-import { Button } from "./ui/button";
 
 const items = [
   { title: "Red Notice", url: "/", icon: ShieldAlert },
   { title: "Yellow Notice", url: "/yellow", icon: TriangleAlert },
-  { title: "Un Notice", url: "/un", icon: OctagonAlert },
+  { title: "Un Notice", url: "/un", icon: CircleAlert },
 ];
 
 export function AppSidebar() {
@@ -63,7 +50,7 @@ export function AppSidebar() {
                     <Link
                       href={item.url}
                       className={clsx(
-                        "flex h-10 grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground md:flex-none md:justify-start md:p-2 md:px-3",
+                        "flex h-10 grow items-center justify-start gap-2 rounded-md p-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
                         {
                           "bg-accent text-accent-foreground":
                             pathname === item.url,

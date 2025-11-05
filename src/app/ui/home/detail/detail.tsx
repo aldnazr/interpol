@@ -50,7 +50,7 @@ export default function RedNoticeDetail({ noticeID }: { noticeID: string }) {
     enabled: !!noticeID,
   });
 
-  const notice: NoticeDetail = data;
+  const notice = data as NoticeDetail;
 
   const colorNames = {
     BRO: "Brown",
