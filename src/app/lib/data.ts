@@ -27,7 +27,7 @@ export async function fetchRedNotice({
 
 export async function fetchDetailRedNotice({ noticeID }: { noticeID: string }) {
   try {
-    const res = await api.get("/notices/v1/red/${noticeID}");
+    const res = await api.get(`/notices/v1/red/${noticeID}`);
     return res.data;
   } catch (err) {
     console.error("Failed to fetch red notices:", err);

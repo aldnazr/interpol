@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { NoticeDetail } from "@/types/api";
 import { Separator } from "@radix-ui/react-separator";
 import {
   AlertTriangle,
@@ -15,20 +14,43 @@ import {
   Scale,
   ExternalLink,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { fetchDetailRedNotice } from "@/app/lib/data";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import NoticeDetailSkeleton from "./detail-skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { NoticeDetail } from "@/types/api";
 
 export default function RedNoticeDetail({ noticeID }: { noticeID: string }) {
-  const [notice, setNotice] = useState<NoticeDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [photoSrc, setPhotoSrc] = useState(null);
+  const {
+    data,
+    isLoading: isNoticeLoading,
+    isError: isNoticeError,
+  } = useQuery({
+    queryKey: ["noticeDetail", noticeID],
+    queryFn: () => fetchDetailRedNotice({ noticeID }),
+    enabled: !!noticeID,
+  });
+
+  const { data: photoSrc, isLoading: isImagesLoading } = useQuery({
+    queryKey: ["noticeImages", noticeID],
+    queryFn: async () => {
+      const res = await fetch(
+        `https://ws-public.interpol.int/notices/v1/red/${noticeID}/images`
+      );
+      if (!res.ok) {
+        throw new Error("Failed to fetch images");
+      }
+      const data = await res.json();
+      const images = data._embedded.images;
+      const lastIndex = images.length - 1;
+      return images[lastIndex]?._links?.self?.href || null;
+    },
+    enabled: !!noticeID,
+  });
+
+  const notice: NoticeDetail = data;
 
   const colorNames = {
     BRO: "Brown",
@@ -57,41 +79,18 @@ export default function RedNoticeDetail({ noticeID }: { noticeID: string }) {
       : "N/A";
   };
 
-  const fetchDetail = async () => {
-    try {
-      setIsLoading(true);
-      const data = await fetchDetailRedNotice({ noticeID });
-      setNotice(data);
-      console.log(data);
-    } catch (error) {
-      setError("Failed to fetch notice details.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  async function loadImages() {
-    const res = await fetch(
-      `https://ws-public.interpol.int/notices/v1/red/${noticeID}/images`
-    );
-    const data = await res.json();
-    const images = data._embedded.images;
-    const lastIndex = images.length - 1;
-    const href = images[lastIndex]?._links?.self?.href;
-    if (href) setPhotoSrc(href);
-  }
-
-  useEffect(() => {
-    if (noticeID) {
-      fetchDetail();
-      loadImages();
-    }
-  }, [noticeID]);
+  const isLoading = isNoticeLoading || isImagesLoading;
+  const isError = isNoticeError;
 
   return (
     <div className="container mx-auto px-4 max-w-6xl">
-      {isLoading && <NoticeDetailSkeleton />}
-      {!isLoading && !error && (
+      {isLoading ? (
+        <NoticeDetailSkeleton />
+      ) : isError ? (
+        <div className="flex items-center justify-center h-64">
+          <p className="text-destructive">Failed to load notice details.</p>
+        </div>
+      ) : (
         <div className="container mx-auto px-4 py-5 max-w-6xl">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
