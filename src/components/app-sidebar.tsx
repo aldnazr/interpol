@@ -11,21 +11,47 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "./mode-toggle";
-import { AlertTriangle } from "lucide-react";
+import {
+  BoxIcon,
+  GalleryVerticalEnd,
+  Globe,
+  LucideGalleryVerticalEnd,
+  OctagonAlert,
+  OctagonX,
+  ShieldAlert,
+  Siren,
+  TriangleAlert,
+  UserSearch,
+  UserX,
+} from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
+import { Button } from "./ui/button";
 
-const items = [{ title: "Red Notice", url: "/", icon: AlertTriangle }];
+const items = [
+  { title: "Red Notice", url: "/", icon: ShieldAlert },
+  { title: "Yellow Notice", url: "/yellow", icon: TriangleAlert },
+  { title: "Un Notice", url: "/un", icon: OctagonAlert },
+];
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { open } = useSidebar();
 
   return (
-    <Sidebar>
-      <SidebarHeader />
+    <Sidebar collapsible="icon" variant="floating">
+      <SidebarHeader>
+        <SidebarMenuButton variant={"disabled"} asChild>
+          <div className="">
+            <Siren />
+            <span className="text-base font-semibold">Interpol</span>
+          </div>
+        </SidebarMenuButton>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
@@ -37,7 +63,7 @@ export function AppSidebar() {
                     <Link
                       href={item.url}
                       className={clsx(
-                        "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-background p-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground md:flex-none md:justify-start md:p-2 md:px-3",
+                        "flex h-10 grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground md:flex-none md:justify-start md:p-2 md:px-3",
                         {
                           "bg-accent text-accent-foreground":
                             pathname === item.url,
@@ -55,7 +81,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <ModeToggle />
+        <ModeToggle size={open ? "icon" : "icon-sm"} />
       </SidebarFooter>
     </Sidebar>
   );

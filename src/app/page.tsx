@@ -9,13 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Notice } from "@/types/api";
-import { Filter, ServerCrash, User } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { fetchRedNotice } from "./lib/data";
 import {
   Pagination,
   PaginationContent,
@@ -25,50 +18,53 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Notice } from "@/types/api";
+import { useQuery } from "@tanstack/react-query";
+import { ServerCrash, User } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { fetchRedNotice } from "./lib/data";
+import { HomeSkeleton } from "./ui/home/loading-skeleton";
 
 export default function Home() {
-  const [notices, setNotices] = useState<Notice[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [forename, setForename] = useState("");
-
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
+  const nameFromUrl = searchParams.get("name") ?? "";
+  const forenameFromUrl = searchParams.get("forename") ?? "";
   const currentPage = Number(searchParams.get("page")) || 1;
-  const [totalPages, setTotalPages] = useState(0);
 
-  const loadNotices = async (
-    searchParams: { name?: string; forename?: string; page?: number } = {}
-  ) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const data = await fetchRedNotice(searchParams);
-      setNotices(data?._embedded?.notices || []);
-      const itemsPerPage = 20;
-      setTotalPages(Math.ceil((data?.total || 0) / itemsPerPage));
-    } catch (e) {
-      setError("Failed to load data from Interpol.");
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [name, setName] = useState(nameFromUrl);
+  const [forename, setForename] = useState(forenameFromUrl);
 
-  useEffect(() => {
-    const name = searchParams.get("name") ?? "";
-    const forename = searchParams.get("forename") ?? "";
-    loadNotices({ name, forename, page: currentPage });
-  }, [searchParams, currentPage]);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["notices", nameFromUrl, forenameFromUrl, currentPage],
+    queryFn: () =>
+      fetchRedNotice({
+        name: nameFromUrl,
+        forename: forenameFromUrl,
+        page: currentPage,
+      }),
+  });
+
+  const notices: Notice[] = data?._embedded?.notices || [];
+  const totalPages = Math.ceil((data?.total || 0) / 20);
 
   const handleSearch = () => {
     const params = new URLSearchParams(searchParams);
-    params.set("name", name);
-    params.set("forename", forename);
+    if (name) {
+      params.set("name", name);
+    } else {
+      params.delete("name");
+    }
+    if (forename) {
+      params.set("forename", forename);
+    } else {
+      params.delete("forename");
+    }
     params.set("page", "1");
     router.push(`${pathname}?${params.toString()}`);
   };
@@ -124,10 +120,7 @@ export default function Home() {
     <div className="flex flex-col md:flex-row mt-4 gap-4">
       <Card className="w-full max-w-xs h-fit sticky top-4">
         <CardContent className="space-y-3">
-          <div className="flex flex-row items-center space-x-1">
-            <Filter />
-            <h3 className="text-lg">Filter</h3>
-          </div>
+          <h3 className="text-lg font-semibold">Filter</h3>
           <Input
             type="text"
             placeholder="First Name"
@@ -148,27 +141,14 @@ export default function Home() {
         </CardFooter>
       </Card>
       <div className="flex-1">
-        {isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {Array.from({ length: 8 }).map((_, index) => (
-              <div key={index} className="flex flex-col space-y-3">
-                <Skeleton className="h-[150px] w-full rounded-xl" />
-                <div className="space-y-2 text-center flex flex-col items-center pt-2">
-                  <Skeleton className="h-6 w-4/5" />
-                  <Skeleton className="h-4 w-5/6 mt-2" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-        {error && (
+        {isLoading && <HomeSkeleton />}
+        {isError && (
           <div className="flex flex-col items-center justify-center h-full text-destructive">
             <ServerCrash className="size-8" />
-            <p className="mt-2">{error}</p>
+            <p className="mt-2">Failed to load data from Interpol.</p>
           </div>
         )}
-        {!isLoading && !error && (
+        {!isLoading && !isError && (
           <div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {notices.map((notice) => (
@@ -176,8 +156,8 @@ export default function Home() {
                   href={notice.entity_id.replace("/", "-")}
                   key={notice.entity_id}
                 >
-                  <Card>
-                    <CardHeader className="flex flex-col justify-center items-center">
+                  <Card className="h-full">
+                    <CardHeader className="flex flex-col justify-start items-center">
                       {notice?._links?.thumbnail?.href ? (
                         <Image
                           src={notice._links.thumbnail.href}
@@ -196,8 +176,7 @@ export default function Home() {
                           </div>
                         </Card>
                       )}
-
-                      <CardTitle className="text-center pt-2">{`${notice.forename} ${notice.name}`}</CardTitle>
+                      <CardTitle className="text-center pt-2 text line-clamp-2">{`${notice.forename} ${notice.name}`}</CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm text-muted-foreground text-center">
                       <p>Nationality: {notice.nationalities || "N/A"}</p>
