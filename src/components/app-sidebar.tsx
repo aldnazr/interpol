@@ -25,6 +25,12 @@ const items = [
   { title: "Un Notice", url: "/un", icon: CircleAlert },
 ];
 
+const colors = {
+  "/": "text-red-500",
+  "/yellow": "text-yellow-500",
+  "/un": "text-blue-500",
+} as const;
+
 export function AppSidebar() {
   const pathname = usePathname();
   const { open } = useSidebar();
@@ -57,7 +63,9 @@ export function AppSidebar() {
                         }
                       )}
                     >
-                      <item.icon />
+                      <item.icon
+                        className={colors[item.url as keyof typeof colors]}
+                      />
                       {item.title}
                     </Link>
                   </SidebarMenuButton>

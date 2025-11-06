@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const isDetailPage = /^\/\d{4}-\d+$/.test(pathname);
+  const isDetailPage = /^\/(red|yellow|un)\/\d{4}-\d+$/.test(pathname);
 
   return (
     <html lang="en" suppressHydrationWarning>

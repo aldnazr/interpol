@@ -14,22 +14,28 @@ import {
   Scale,
   ExternalLink,
 } from "lucide-react";
-import { fetchDetailRedNotice } from "@/app/lib/data";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import NoticeDetailSkeleton from "./detail-skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { NoticeDetail } from "@/types/api";
+import { fetchNoticeDetail, NoticeTypes } from "@/app/lib/data";
 
-export default function RedNoticeDetail({ noticeID }: { noticeID: string }) {
+export default function NoticeDetailPage({
+  noticeType,
+  noticeID,
+}: {
+  noticeType: NoticeTypes;
+  noticeID: string;
+}) {
   const {
     data,
     isLoading: isNoticeLoading,
     isError: isNoticeError,
   } = useQuery({
     queryKey: ["noticeDetail", noticeID],
-    queryFn: () => fetchDetailRedNotice({ noticeID }),
+    queryFn: () => fetchNoticeDetail({ noticeType, noticeID }),
     enabled: !!noticeID,
   });
 
@@ -37,7 +43,9 @@ export default function RedNoticeDetail({ noticeID }: { noticeID: string }) {
     queryKey: ["noticeImages", noticeID],
     queryFn: async () => {
       const res = await fetch(
-        `https://ws-public.interpol.int/notices/v1/red/${noticeID}/images`
+        `https://ws-public.interpol.int/notices/v1/${noticeType}/${
+          noticeType === "un" ? "persons" : ""
+        }/${noticeID}/images`
       );
       if (!res.ok) {
         throw new Error("Failed to fetch images");
