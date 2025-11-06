@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Separator } from "@radix-ui/react-separator";
 import {
   AlertTriangle,
   User,
@@ -13,6 +12,9 @@ import {
   Palette,
   Scale,
   ExternalLink,
+  UserRound,
+  Venus,
+  Mars,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
@@ -20,7 +22,14 @@ import { Button } from "@/components/ui/button";
 import NoticeDetailSkeleton from "./detail-skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { NoticeDetail } from "@/types/api";
-import { fetchNoticeDetail, NoticeTypes } from "@/app/lib/data";
+import {
+  fetchDetailImage,
+  fetchNoticeDetail,
+  NoticeTypes,
+} from "@/app/lib/data";
+import { ArrestWarrant } from "./arrest-warrants";
+import { Separator } from "@/components/ui/separator";
+import { Nationality } from "@/lib/utils";
 
 export default function NoticeDetailPage({
   noticeType,
@@ -41,20 +50,7 @@ export default function NoticeDetailPage({
 
   const { data: photoSrc, isLoading: isImagesLoading } = useQuery({
     queryKey: ["noticeImages", noticeID],
-    queryFn: async () => {
-      const res = await fetch(
-        `https://ws-public.interpol.int/notices/v1/${noticeType}/${
-          noticeType === "un" ? "persons" : ""
-        }/${noticeID}/images`
-      );
-      if (!res.ok) {
-        throw new Error("Failed to fetch images");
-      }
-      const data = await res.json();
-      const images = data._embedded.images;
-      const lastIndex = images.length - 1;
-      return images[lastIndex]?._links?.self?.href || null;
-    },
+    queryFn: () => fetchDetailImage({ noticeType, noticeID }),
     enabled: !!noticeID,
   });
 
@@ -62,6 +58,9 @@ export default function NoticeDetailPage({
 
   const colorNames = {
     BRO: "Brown",
+    BROD: "Brown",
+    BROH: "Brown",
+    YELB: "Brown",
     BLA: "Black",
   } as const;
 
@@ -85,6 +84,11 @@ export default function NoticeDetailPage({
           ((height * 3.28084) % 1) * 12
         )}in)`
       : "N/A";
+  };
+
+  const formatName = (name: string | undefined | null) => {
+    if (!name) return "";
+    return name.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
   const isLoading = isNoticeLoading || isImagesLoading;
@@ -117,7 +121,11 @@ export default function NoticeDetailPage({
               <Badge variant="destructive" className="text-sm">
                 WANTED
               </Badge>
-              <Badge variant="outline">{notice?.nationalities?.[0]}</Badge>
+              {notice?.nationalities?.[0] && (
+                <Badge>
+                  <Nationality code={notice.nationalities[0]} />
+                </Badge>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -125,7 +133,7 @@ export default function NoticeDetailPage({
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <User className="h-5 w-5" />
+                    <UserRound className="size-5" />
                     Personal Information
                   </CardTitle>
                 </CardHeader>
@@ -135,24 +143,54 @@ export default function NoticeDetailPage({
                       <label className="text-sm font-medium text-muted-foreground">
                         Full Name
                       </label>
-                      <p className="text-lg font-semibold">
-                        {notice?.forename} {notice?.name}
+                      <p className="font-semibold text-lg flex items-center gap-2">
+                        <User className="size-4" />
+                        {formatName(`${notice?.forename} ${notice?.name}`)}
                       </p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">
                         Sex
                       </label>
-                      <p className="text-lg">
-                        {notice?.sex_id ? sexNames[notice?.sex_id] : "N/A"}
+                      <p className="text-lg flex items-center gap-2">
+                        {notice?.sex_id === "M" ? (
+                          <Mars className="size-4" />
+                        ) : (
+                          <Venus className="size-4" />
+                        )}
+                        {sexNames[notice?.sex_id] ?? "N/A"}
                       </p>
                     </div>
+                    {notice?.father_forename && notice?.father_name && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">
+                          Father Name
+                        </label>
+                        <p className="text-lg">
+                          {formatName(
+                            `${notice?.father_forename} ${notice?.father_name}`
+                          )}
+                        </p>
+                      </div>
+                    )}
+                    {notice?.mother_forename && notice?.mother_name && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">
+                          Mother Name
+                        </label>
+                        <p className="text-lg">
+                          {formatName(
+                            `${notice?.mother_forename} ${notice?.mother_name}`
+                          )}
+                        </p>
+                      </div>
+                    )}
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">
                         Date of Birth
                       </label>
                       <p className="text-lg flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
+                        <Calendar className="size-4" />
                         {formatDate(notice?.date_of_birth)}
                       </p>
                     </div>
@@ -161,24 +199,22 @@ export default function NoticeDetailPage({
                         Place of Birth
                       </label>
                       <p className="text-lg flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
+                        <MapPin className="size-4" />
                         {notice?.place_of_birth ?? "Unknown"}
                       </p>
                     </div>
                   </div>
-
                   <Separator />
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">
                         Nationality
                       </label>
                       <div className="flex items-center gap-2 mt-1">
-                        <Flag className="h-4 w-4" />
+                        <Flag className="size-4" />
                         {notice?.nationalities?.map((nat) => (
-                          <Badge key={nat} variant="secondary">
-                            {nat}
+                          <Badge key={nat} variant={"secondary"}>
+                            <Nationality code={nat} />
                           </Badge>
                         ))}
                       </div>
@@ -188,13 +224,10 @@ export default function NoticeDetailPage({
                         Languages
                       </label>
                       <div className="flex items-center gap-2 mt-1">
-                        <Languages className="h-4 w-4" />
+                        <Languages className="size-4" />
                         {notice?.languages_spoken_ids?.map((lang) => (
-                          <Badge key={lang} variant="outline">
-                            {
-                              // countryNames[lang] ||
-                              lang
-                            }
+                          <Badge key={lang} variant="secondary">
+                            {lang}
                           </Badge>
                         ))}
                       </div>
@@ -233,7 +266,7 @@ export default function NoticeDetailPage({
                         Eye Color
                       </label>
                       <div className="flex items-center gap-2 mt-1">
-                        <Eye className="h-4 w-4" />
+                        <Eye className="size-4" />
                         {notice?.eyes_colors_id ? (
                           <Badge variant="outline">
                             {colorNames[notice.eyes_colors_id]}
@@ -248,7 +281,7 @@ export default function NoticeDetailPage({
                         Hair Color
                       </label>
                       <div className="flex items-center gap-2 mt-1">
-                        <Palette className="h-4 w-4" />
+                        <Palette className="size-4" />
                         {notice?.hairs_id ? (
                           <Badge variant="outline">
                             {colorNames[notice.hairs_id]}
@@ -280,28 +313,23 @@ export default function NoticeDetailPage({
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Scale className="h-5 w-5" />
+                    <Scale className="size-5" />
                     Criminal Charges
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {notice?.arrest_warrants?.map((warrant, index) => (
-                    <div key={index} className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="destructive">
-                          Issuing Country: {warrant.issuing_country_id}
-                        </Badge>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Charges
-                        </label>
-                        <p className="text-sm leading-relaxed mt-1 p-3 bg-muted rounded-lg">
-                          {warrant.charge}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                  {notice?.arrest_warrants ? (
+                    notice?.arrest_warrants?.map((warrant, index) => (
+                      <ArrestWarrant
+                        key={warrant.issuing_country_id + index}
+                        index={index}
+                        issuingCountryId={warrant.issuing_country_id}
+                        charge={warrant.charge}
+                      />
+                    ))
+                  ) : (
+                    <ArrestWarrant />
+                  )}
                 </CardContent>
               </Card>
             </div>

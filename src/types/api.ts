@@ -32,6 +32,11 @@ export interface NoticeDetail {
   weight?: number | null;
   forename: string;
   date_of_birth: string;
+  father_name: string;
+  father_forename: string;
+  mother_name: string;
+  mother_forename: string;
+  countries_likely_to_be_visited: string[] | null;
   entity_id: string;
   languages_spoken_ids?: string[] | null;
   nationalities?: string[] | null;

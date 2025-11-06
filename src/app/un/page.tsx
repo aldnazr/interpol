@@ -1,4 +1,4 @@
-import CriminalList from "../ui/home/criminal-list";
+import CriminalList from "../ui/home/home";
 
 export default function Page() {
   return <CriminalList noticeType="un" />;

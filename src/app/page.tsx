@@ -1,7 +1,7 @@
 "use client";
 
-import CriminalList from "./ui/home/criminal-list";
+import NoticePage from "./ui/home/home";
 
 export default function Home() {
-  return <CriminalList noticeType="red" />;
+  return <NoticePage noticeType="red" />;
 }

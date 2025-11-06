@@ -20,9 +20,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { HomeSkeleton } from "./loading-skeleton";
+import { HomeSkeleton } from "./home-skeleton";
 
-export default function CriminalList({
+export default function NoticePage({
   noticeType,
 }: {
   noticeType: NoticeTypes;
