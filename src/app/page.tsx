@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/pagination";
 import { Notice } from "@/types/api";
 import { useQuery } from "@tanstack/react-query";
-import { ServerCrash, User } from "lucide-react";
+import { SearchIcon, ServerCrash, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -117,10 +117,10 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row mt-4 gap-4">
-      <Card className="w-full max-w-xs h-fit sticky top-4">
-        <CardContent className="space-y-3">
-          <h3 className="text-lg font-semibold">Filter</h3>
+    <div className="flex flex-col mt-2 gap-5">
+      {/* Search Card */}
+      <Card className="self-center w-full max-w-xl rounded-2xl h-fit">
+        <CardContent className="flex space-x-3">
           <Input
             type="text"
             placeholder="First Name"
@@ -133,12 +133,10 @@ export default function Home() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-        </CardContent>
-        <CardFooter>
-          <Button className="w-full" onClick={handleSearch}>
-            Search
+          <Button size={"icon"} onClick={handleSearch}>
+            <SearchIcon />
           </Button>
-        </CardFooter>
+        </CardContent>
       </Card>
       <div className="flex-1">
         {isLoading && <HomeSkeleton />}
@@ -153,8 +151,8 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {notices.map((notice) => (
                 <Link
-                  href={notice.entity_id.replace("/", "-")}
                   key={notice.entity_id}
+                  href={notice.entity_id.replace("/", "-")}
                 >
                   <Card className="h-full">
                     <CardHeader className="flex flex-col justify-start items-center">

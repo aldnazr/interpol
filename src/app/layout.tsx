@@ -46,9 +46,9 @@ export default function RootLayout({
           <QueryClientProvider client={queryClient}>
             <SidebarProvider>
               {!isDetailPage && <AppSidebar />}
-              <main className="flex-1 p-4">
+              <main className="flex-1 p-3">
                 {!isDetailPage && (
-                  <SidebarTrigger variant={"outline"} className="size-9" />
+                  <SidebarTrigger variant={"secondary"} className="size-9" />
                 )}
                 {children}
               </main>
