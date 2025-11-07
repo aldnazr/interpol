@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 
 export default function NoticeDetailSkeleton() {
   return (
-    <div className="container mx-auto px-4 py-5 max-w-6xl">
+    <>
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-destructive/10 rounded-lg">
@@ -167,6 +167,6 @@ export default function NoticeDetailSkeleton() {
           </Card>
         </div>
       </div>
-    </div>
+    </>
   );
 }

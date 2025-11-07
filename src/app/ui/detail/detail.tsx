@@ -59,8 +59,8 @@ export default function NoticeDetailPage({
   const colorNames = {
     BRO: "Brown",
     BROD: "Brown",
-    BROH: "Brown",
-    YELB: "Brown",
+    BROH: "Hazel",
+    YELB: "Blond",
     BLA: "Black",
   } as const;
 
@@ -86,11 +86,6 @@ export default function NoticeDetailPage({
       : "N/A";
   };
 
-  const formatName = (name: string | undefined | null) => {
-    if (!name) return "";
-    return name.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
-  };
-
   const isLoading = isNoticeLoading || isImagesLoading;
   const isError = isNoticeError;
 
@@ -110,10 +105,12 @@ export default function NoticeDetailPage({
                 <AlertTriangle className="h-6 w-6 text-destructive" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-balance">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-balance">
                   INTERPOL Red Notice
                 </h1>
-                <p className="text-muted-foreground">Entity ID: {noticeID}</p>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Entity ID: {noticeID}
+                </p>
               </div>
             </div>
 
@@ -143,9 +140,9 @@ export default function NoticeDetailPage({
                       <label className="text-sm font-medium text-muted-foreground">
                         Full Name
                       </label>
-                      <p className="font-semibold text-lg flex items-center gap-2">
+                      <p className="capitalize font-semibold text-lg flex items-center gap-2">
                         <User className="size-4" />
-                        {formatName(`${notice?.forename} ${notice?.name}`)}
+                        {`${notice?.forename.toLowerCase()} ${notice?.name.toLowerCase()}`}
                       </p>
                     </div>
                     <div>
@@ -161,30 +158,6 @@ export default function NoticeDetailPage({
                         {sexNames[notice?.sex_id] ?? "N/A"}
                       </p>
                     </div>
-                    {notice?.father_forename && notice?.father_name && (
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Father Name
-                        </label>
-                        <p className="text-lg">
-                          {formatName(
-                            `${notice?.father_forename} ${notice?.father_name}`
-                          )}
-                        </p>
-                      </div>
-                    )}
-                    {notice?.mother_forename && notice?.mother_name && (
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">
-                          Mother Name
-                        </label>
-                        <p className="text-lg">
-                          {formatName(
-                            `${notice?.mother_forename} ${notice?.mother_name}`
-                          )}
-                        </p>
-                      </div>
-                    )}
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">
                         Date of Birth
@@ -198,9 +171,9 @@ export default function NoticeDetailPage({
                       <label className="text-sm font-medium text-muted-foreground">
                         Place of Birth
                       </label>
-                      <p className="text-lg flex items-center gap-2">
+                      <p className="text-lg capitalize flex items-center gap-2">
                         <MapPin className="size-4" />
-                        {notice?.place_of_birth ?? "Unknown"}
+                        {notice?.place_of_birth?.toLowerCase() ?? "Unknown"}
                       </p>
                     </div>
                   </div>
@@ -232,6 +205,26 @@ export default function NoticeDetailPage({
                         ))}
                       </div>
                     </div>
+                    {notice?.father_forename && notice?.father_name && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">
+                          Father Name
+                        </label>
+                        <p className="text-lg capitalize">
+                          {`${notice?.father_forename.toLowerCase()} ${notice?.father_name.toLowerCase()}`}
+                        </p>
+                      </div>
+                    )}
+                    {notice?.mother_forename && notice?.mother_name && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">
+                          Mother Name
+                        </label>
+                        <p className="text-lg capitalize">
+                          {`${notice?.mother_forename.toLowerCase()} ${notice?.mother_name.toLowerCase()}`}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
