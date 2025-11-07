@@ -184,10 +184,11 @@ export default function NoticePage({
                             Nationality
                           </p>
                           <div className="font-medium flex flex-wrap space-x-1">
-                            {notice.nationalities.map((nationality, index) => (
-                              <span key={nationality}>
-                                <Nationality code={nationality} />
-                                {index < notice.nationalities.length - 1 && ","}
+                            {notice.nationalities.map((nat, index) => (
+                              <span key={nat}>
+                                <Nationality code={nat} />
+                                {index < notice.nationalities.length - 1 &&
+                                  ", "}
                               </span>
                             ))}
                           </div>
@@ -209,16 +210,16 @@ export default function NoticePage({
                   </div>
 
                   {/* View Details Button */}
-                  <Button variant="outline" className="w-full mt-4">
-                    <Link
-                      href={`/${noticeType}/${notice.entity_id.replace(
-                        "/",
-                        "-"
-                      )}`}
-                    >
+                  <Link
+                    href={`/${noticeType}/${notice.entity_id.replace(
+                      "/",
+                      "-"
+                    )}`}
+                  >
+                    <Button variant="outline" className="w-full mt-4">
                       View Details
-                    </Link>
-                  </Button>
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}

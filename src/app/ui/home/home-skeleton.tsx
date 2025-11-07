@@ -6,14 +6,15 @@ export const HomeSkeleton = () => {
       {Array.from({ length: 12 }).map((_, index) => (
         <div
           key={index}
-          className="flex flex-col bg-blue-950/10 rounded-2xl justify-center"
+          className="flex flex-col bg-accent/10 border rounded-2xl justify-center"
         >
           <Skeleton className="h-[150px] w-[150px] self-center rounded-xl mt-6 mb-5" />
           <Skeleton className="h-6 w-4/5 self-center mb-5" />
           <div className="space-y-2 text-center flex flex-col items-center mb-6">
-            <Skeleton className="h-3 w-5/6" />
+            <Skeleton className="h-3 w-3/4" />
             <Skeleton className="h-3 w-3/4" />
           </div>
+          <Skeleton className="self-center h-9 w-3/4 mb-6" />
         </div>
       ))}
     </div>
