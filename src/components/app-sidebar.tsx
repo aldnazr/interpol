@@ -41,7 +41,7 @@ export function AppSidebar() {
         <SidebarMenuButton variant={"disabled"} asChild>
           <div className="text-white bg-linear-to-r from-blue-600 from-20% to-red-500 to-80%">
             <Siren />
-            <span className="font-semibold">Interpol</span>
+            <span className="text-nowrap font-semibold">Interpol</span>
           </div>
         </SidebarMenuButton>
       </SidebarHeader>
@@ -56,7 +56,7 @@ export function AppSidebar() {
                     <Link
                       href={item.url}
                       className={clsx(
-                        "flex h-10 grow items-center justify-start gap-2 rounded-md p-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                        "text-nowrap flex h-10 grow items-center justify-start gap-2 rounded-md p-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
                         {
                           "bg-accent text-accent-foreground":
                             pathname === item.url,
