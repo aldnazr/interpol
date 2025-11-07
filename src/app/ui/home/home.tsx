@@ -176,22 +176,24 @@ export default function NoticePage({
                 <CardContent className="space-y-3 pt-0">
                   {/* Info Items */}
                   <div className="space-y-2">
-                    <div className="flex items-start gap-2 text-sm">
-                      <Globe className="size-4 text-muted-foreground mt-0.5 shrink" />
-                      <div className="flex-1">
-                        <p className="text-xs text-muted-foreground font-medium">
-                          Nationality
-                        </p>
-                        <div className="font-medium flex flex-wrap space-x-1">
-                          {notice.nationalities.map((nationality, index) => (
-                            <span key={nationality}>
-                              <Nationality code={nationality} />
-                              {index < notice.nationalities.length - 1 && ","}
-                            </span>
-                          ))}
+                    {notice.nationalities && (
+                      <div className="flex items-start gap-2 text-sm">
+                        <Globe className="size-4 text-muted-foreground mt-0.5 shrink" />
+                        <div className="flex-1">
+                          <p className="text-xs text-muted-foreground font-medium">
+                            Nationality
+                          </p>
+                          <div className="font-medium flex flex-wrap space-x-1">
+                            {notice.nationalities.map((nationality, index) => (
+                              <span key={nationality}>
+                                <Nationality code={nationality} />
+                                {index < notice.nationalities.length - 1 && ","}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
 
                     <div className="flex items-start gap-2 text-sm">
                       <Calendar className="w-4 h-4 text-muted-foreground mt-0.5 shrink" />
