@@ -1,7 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { fetchCountryData } from "@/app/lib/data";
 import clsx from "clsx";
-import { useQuery } from "@tanstack/react-query";
 import { Nationality } from "@/lib/utils";
 
 export function ArrestWarrant({

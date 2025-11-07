@@ -39,7 +39,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader>
         <SidebarMenuButton variant={"disabled"} asChild>
-          <div className="">
+          <div className="bg-linear-to-r from-blue-600 from-20% to-red-500 to-80%">
             <Siren />
             <span className="text-base font-semibold">Interpol</span>
           </div>
@@ -51,7 +51,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild>
                     <Link
                       href={item.url}

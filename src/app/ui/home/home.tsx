@@ -117,7 +117,7 @@ export default function NoticePage({
   return (
     <div className="flex flex-col mt-2 gap-5">
       {/* Search Card */}
-      <Card className="border-0 self-center py-5 w-full max-w-xl rounded-2xl h-fit">
+      <Card className="self-center py-5 w-full max-w-xl rounded-2xl shadow-lg h-fit">
         <CardContent className="flex space-x-3">
           <Input
             type="text"
@@ -155,7 +155,7 @@ export default function NoticePage({
                   // /${noticeType}
                   href={`/${noticeType}/${notice.entity_id.replace("/", "-")}`}
                 >
-                  <Card className="h-full">
+                  <Card className="h-full shadow-lg hover:bg-muted">
                     <CardHeader className="flex flex-col justify-start items-center">
                       {notice?._links?.thumbnail?.href ? (
                         <Image
