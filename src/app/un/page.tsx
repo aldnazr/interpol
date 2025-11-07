@@ -1,5 +1,11 @@
-import CriminalList from "../ui/home/home";
+import { Suspense } from "react";
+import NoticePage from "../ui/home/home";
+import { HomeSkeleton } from "../ui/home/home-skeleton";
 
 export default function Page() {
-  return <CriminalList noticeType="un" />;
+  return (
+    <Suspense fallback={<HomeSkeleton />}>
+      <NoticePage noticeType="un" />;
+    </Suspense>
+  );
 }
