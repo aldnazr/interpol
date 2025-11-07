@@ -41,7 +41,7 @@ export function AppSidebar() {
         <SidebarMenuButton variant={"disabled"} asChild>
           <div className="text-white bg-linear-to-r from-blue-600 from-20% to-red-500 to-80%">
             <Siren />
-            <span className="text-base font-semibold">Interpol</span>
+            <span className="font-semibold">Interpol</span>
           </div>
         </SidebarMenuButton>
       </SidebarHeader>

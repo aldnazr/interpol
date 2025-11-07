@@ -7,7 +7,7 @@ import { HomeSkeleton } from "./ui/home/home-skeleton";
 export default function Home() {
   return (
     <Suspense fallback={<HomeSkeleton />}>
-      <NoticePage noticeType="red" />;
+      <NoticePage noticeType="red" />
     </Suspense>
   );
 }

@@ -116,7 +116,7 @@ export default function NoticePage({
   };
 
   return (
-    <div>
+    <div className="mt-2">
       {isLoading ? (
         <HomeSkeleton />
       ) : isError ? (
@@ -125,7 +125,7 @@ export default function NoticePage({
           <p className="mt-2">Failed to load data from Interpol.</p>
         </div>
       ) : (
-        <div className="flex flex-col mt-2 gap-5">
+        <div className="flex flex-col gap-5">
           {/* Search Card */}
           <Card className="self-center py-5 w-full max-w-xl rounded-2xl shadow-lg h-fit">
             <CardContent className="flex space-x-3">
