@@ -340,7 +340,7 @@ export default function NoticeDetailPage({
                   <CardTitle>Photo</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="aspect-[3/4] bg-muted rounded-lg flex items-center justify-center">
+                  <div className="aspect-3/4 bg-muted rounded-lg flex items-center justify-center">
                     {photoSrc ? (
                       <Image
                         src={photoSrc}
