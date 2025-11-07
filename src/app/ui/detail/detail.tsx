@@ -90,7 +90,7 @@ export default function NoticeDetailPage({
   const isError = isNoticeError;
 
   return (
-    <div className="container mx-auto px-4 py-5 max-w-6xl">
+    <div className="container mx-auto py-3 md:py-5 max-w-6xl">
       {isLoading ? (
         <NoticeDetailSkeleton />
       ) : isError ? (
@@ -106,7 +106,7 @@ export default function NoticeDetailPage({
               </div>
               <div>
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-balance">
-                  INTERPOL Red Notice
+                  INTERPOL {noticeType.toUpperCase()} Notice
                 </h1>
                 <p className="text-sm sm:text-base text-muted-foreground">
                   Entity ID: {noticeID}
@@ -115,10 +115,12 @@ export default function NoticeDetailPage({
             </div>
 
             <div className="flex items-center gap-2 mb-6">
-              <Badge variant="destructive" className="text-sm">
-                WANTED
-              </Badge>
-              {notice?.nationalities?.[0] && (
+              {noticeType === "red" && (
+                <Badge variant="destructive" className="text-sm">
+                  WANTED
+                </Badge>
+              )}
+              {notice?.nationalities && (
                 <Badge>
                   <Nationality code={notice.nationalities[0]} />
                 </Badge>

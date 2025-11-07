@@ -116,7 +116,7 @@ export default function NoticePage({
   };
 
   return (
-    <div className="mt-2">
+    <div className="mt-4">
       {isLoading ? (
         <HomeSkeleton />
       ) : isError ? (

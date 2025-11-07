@@ -22,7 +22,7 @@ import { usePathname } from "next/navigation";
 const items = [
   { title: "Red Notice", url: "/", icon: ShieldAlert },
   { title: "Yellow Notice", url: "/yellow", icon: TriangleAlert },
-  { title: "Un Notice", url: "/un", icon: CircleAlert },
+  { title: "UN Notice", url: "/un", icon: CircleAlert },
 ];
 
 const colors = {
@@ -39,7 +39,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader>
         <SidebarMenuButton variant={"disabled"} asChild>
-          <div className="text-white bg-linear-to-r from-blue-600 from-20% to-red-500 to-80%">
+          <div className="text-white my-2 md:my-1 bg-linear-to-r from-blue-600 from-20% to-red-500 to-80%">
             <Siren />
             <span className="text-nowrap font-semibold">Interpol</span>
           </div>
