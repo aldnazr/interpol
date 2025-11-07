@@ -95,7 +95,7 @@ export default function NoticeDetailPage({
   const isError = isNoticeError;
 
   return (
-    <div className="container mx-auto px-4 max-w-6xl">
+    <div className="container mx-auto px-4 py-5 max-w-6xl">
       {isLoading ? (
         <NoticeDetailSkeleton />
       ) : isError ? (
@@ -103,7 +103,7 @@ export default function NoticeDetailPage({
           <p className="text-destructive">Failed to load notice details.</p>
         </div>
       ) : (
-        <div className="container mx-auto px-4 py-5 max-w-6xl">
+        <div>
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-destructive/10 rounded-lg">

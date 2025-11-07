@@ -116,7 +116,6 @@ export default function NoticeDetailSkeleton() {
             </CardContent>
           </Card>
         </div>
-
         <div className="space-y-6">
           {/* Photo Card */}
           <Card>
@@ -124,7 +123,7 @@ export default function NoticeDetailSkeleton() {
               <Skeleton className="h-6 w-16" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="aspect-[3/4] w-full rounded-lg" />
+              <Skeleton className="aspect-3/4 w-full rounded-lg" />
             </CardContent>
           </Card>
 
