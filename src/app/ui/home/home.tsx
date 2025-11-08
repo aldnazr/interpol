@@ -14,14 +14,32 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Notice } from "@/types/api";
-import { useQuery } from "@tanstack/react-query";
-import { Calendar, Globe, SearchIcon, ServerCrash, User } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  ArrowLeft,
+  Bell,
+  Calendar,
+  Globe,
+  RefreshCcwIcon,
+  SearchIcon,
+  SearchX,
+  User,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { HomeSkeleton } from "./home-skeleton";
 import { Nationality } from "@/lib/utils";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 export default function NoticePage({
   noticeType,
@@ -32,6 +50,7 @@ export default function NoticePage({
   const router = useRouter();
   const pathname = usePathname();
 
+  const queryClient = useQueryClient();
   const nameFromUrl = searchParams.get("name") ?? "";
   const forenameFromUrl = searchParams.get("forename") ?? "";
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -121,27 +140,27 @@ export default function NoticePage({
         <HomeSkeleton />
       ) : isError ? (
         <div className="flex flex-col items-center justify-center h-full text-destructive">
-          <ServerCrash className="size-8" />
+          <SearchX className="size-8" />
           <p className="mt-2">Failed to load data from Interpol.</p>
         </div>
-      ) : (
+      ) : notices.length !== 0 ? (
         <div className="flex flex-col gap-5">
           {/* Search Card */}
-          <Card className="self-center py-5 w-full max-w-xl rounded-2xl shadow-lg h-fit">
+          <Card className="self-center py-5 w-full max-w-xl rounded-2xl shadow-md h-fit">
             <CardContent className="flex space-x-3">
               <Input
-                type="text"
+                type="search"
                 placeholder="First Name"
                 value={forename}
                 onChange={(e) => setForename(e.target.value)}
-                className="border-0 shadow-none"
+                className="shadow-none"
               />
               <Input
-                type="text"
+                type="search"
                 placeholder="Last Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="border-0 shadow-none"
+                className="shadow-none"
               />
               <Button size={"icon"} onClick={handleSearch}>
                 <SearchIcon />
@@ -266,6 +285,49 @@ export default function NoticePage({
               </Pagination>
             )}
           </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-5">
+          {/* Empty Search Card */}
+          <Card className="self-center py-5 w-full max-w-xl rounded-2xl shadow-md h-fit">
+            <CardContent className="flex space-x-3">
+              <Input
+                type="search"
+                placeholder="First Name"
+                value={forename}
+                onChange={(e) => setForename(e.target.value)}
+                className="shadow-none"
+              />
+              <Input
+                type="search"
+                placeholder="Last Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="shadow-none"
+              />
+              <Button size={"icon"} onClick={handleSearch}>
+                <SearchIcon />
+              </Button>
+            </CardContent>
+          </Card>
+          <Empty className="border border-solid shadow-lg w-full md:max-w-md self-center">
+            <EmptyHeader>
+              <EmptyMedia>
+                <SearchX className="size-10" />
+              </EmptyMedia>
+              <EmptyTitle>No Results Found</EmptyTitle>
+              <EmptyDescription>
+                Your search did not return any results. Please try again with
+                different criteria.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button variant="outline" size="sm" onClick={() => router.back()}>
+                <ArrowLeft className="mr-2 size-4" />
+                Go Back
+              </Button>
+            </EmptyContent>
+          </Empty>
         </div>
       )}
     </div>

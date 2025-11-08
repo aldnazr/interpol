@@ -39,7 +39,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader>
         <SidebarMenuButton variant={"disabled"} asChild>
-          <div className="text-white my-2 md:my-1 bg-linear-to-r from-blue-600 from-20% to-red-500 to-80%">
+          <div className="text-white hover:text-white active:text-white my-2 md:my-1 bg-linear-to-r from-blue-600 from-20% to-red-500 to-80%">
             <Siren />
             <span className="text-nowrap font-semibold">Interpol</span>
           </div>

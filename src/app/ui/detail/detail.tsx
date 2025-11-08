@@ -15,6 +15,7 @@ import {
   UserRound,
   Venus,
   Mars,
+  IdCard,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
@@ -132,7 +133,7 @@ export default function NoticeDetailPage({
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <UserRound className="size-5" />
+                    <IdCard className="size-5" />
                     Personal Information
                   </CardTitle>
                 </CardHeader>
@@ -142,8 +143,8 @@ export default function NoticeDetailPage({
                       <label className="text-sm font-medium text-muted-foreground">
                         Full Name
                       </label>
-                      <p className="capitalize font-semibold text-lg flex items-center gap-2">
-                        <User className="size-4" />
+                      <p className="capitalize text-lg flex items-center gap-2">
+                        <UserRound className="size-4" />
                         {`${notice?.forename.toLowerCase()} ${notice?.name.toLowerCase()}`}
                       </p>
                     </div>

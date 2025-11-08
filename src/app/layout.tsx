@@ -46,14 +46,17 @@ export default function RootLayout({
           <QueryClientProvider client={queryClient}>
             <SidebarProvider>
               {!isDetailPage && <AppSidebar />}
-              <main className="flex-1 py-5 px-6 md:py-4 md:px-3">
+              {/* py-5 px-6 md:py-4 md:px-3 */}
+              <main className="flex-1">
                 {!isDetailPage && (
-                  <SidebarTrigger
-                    variant={"secondary"}
-                    className="border size-9"
-                  />
+                  <div className="flex px-3 h-16 md:h-20 w-full items-center sticky top-0 backdrop-blur-sm">
+                    <SidebarTrigger
+                      variant={"outline"}
+                      className="border size-9"
+                    />
+                  </div>
                 )}
-                {children}
+                <div className="px-3">{children}</div>
               </main>
             </SidebarProvider>
           </QueryClientProvider>
