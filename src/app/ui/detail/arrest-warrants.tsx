@@ -12,7 +12,10 @@ export function ArrestWarrant({
   charge?: string;
 }) {
   return (
-    <div key={index ?? 0} className={clsx("space-y-3", { "mt-6": index! > 0 })}>
+    <div
+      key={index ?? 0}
+      className={clsx("space-y-3", { "mt-6": index ?? 0 > 0 })}
+    >
       <Badge variant="destructive">
         {`Issuing City: ${
           issuingCountryId ? Nationality({ code: issuingCountryId }) : "N/A"
