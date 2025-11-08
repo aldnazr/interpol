@@ -168,7 +168,7 @@ export default function NoticePage({
             </CardContent>
           </Card>
           {/* List Content */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 transition-all duration-300 ease-in-out">
             {notices.map((notice) => (
               <Card key={notice.entity_id} className="h-full shadow-lg">
                 <CardHeader className="flex flex-col justify-start items-center">
@@ -190,9 +190,9 @@ export default function NoticePage({
                       </div>
                     </Card>
                   )}
-                  <CardTitle className="text-center pt-2 text line-clamp-2">{`${notice.forename} ${notice.name}`}</CardTitle>
+                  <CardTitle className="text-center pt-2 text leading-snug line-clamp-2 md:min-h-14">{`${notice.forename} ${notice.name}`}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 pt-0">
+                <CardContent className="space-y-2">
                   {/* Info Items */}
                   <div className="space-y-2">
                     {notice.nationalities && (
