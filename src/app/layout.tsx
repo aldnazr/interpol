@@ -46,7 +46,6 @@ export default function RootLayout({
           <QueryClientProvider client={queryClient}>
             <SidebarProvider>
               {!isDetailPage && <AppSidebar />}
-              {/* py-5 px-6 md:py-4 md:px-3 */}
               <main className="flex-1">
                 {!isDetailPage && (
                   <div className="flex px-3 h-16 md:h-20 w-full items-center sticky top-0 backdrop-blur-sm">
