@@ -146,7 +146,7 @@ export default function NoticePage({
       ) : notices.length !== 0 ? (
         <div className="flex flex-col gap-5">
           {/* Search Card */}
-          <Card className="self-center py-5 w-full max-w-xl rounded-2xl shadow-md h-fit">
+          <Card className="self-center py-5 w-full max-w-lg rounded-2xl shadow-md h-fit">
             <CardContent className="flex space-x-3">
               <Input
                 type="search"
@@ -168,7 +168,7 @@ export default function NoticePage({
             </CardContent>
           </Card>
           {/* List Content */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 transition-all duration-300 ease-in-out">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 transition-all duration-300 ease-in-out">
             {notices.map((notice) => (
               <Card key={notice.entity_id} className="h-full shadow-lg">
                 <CardHeader className="flex flex-col justify-start items-center">

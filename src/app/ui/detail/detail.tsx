@@ -91,7 +91,7 @@ export default function NoticeDetailPage({
   const isError = isNoticeError;
 
   return (
-    <div className="container mx-auto py-3 md:py-5 max-w-6xl">
+    <div className="container mx-auto py-4 md:py-6 max-w-5xl">
       {isLoading ? (
         <NoticeDetailSkeleton />
       ) : isError ? (
@@ -99,12 +99,14 @@ export default function NoticeDetailPage({
           <p className="text-destructive">Failed to load notice details.</p>
         </div>
       ) : (
-        <div>
-          <div className="mb-8">
+        <>
+          <div className="mt-3 mb-8 md:mt-4 md:mb-10">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-destructive/10 rounded-lg">
-                <AlertTriangle className="h-6 w-6 text-destructive" />
-              </div>
+              {noticeType === "red" && (
+                <div className="p-2 bg-destructive/10 rounded-lg">
+                  <AlertTriangle className="size-6 text-destructive" />
+                </div>
+              )}
               <div>
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-balance">
                   INTERPOL {noticeType.toUpperCase()} Notice
@@ -454,7 +456,7 @@ export default function NoticeDetailPage({
               </Card>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
